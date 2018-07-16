@@ -8,23 +8,13 @@ namespace xadrex_console
     {
         static void Main(string[] args)
         {
-            
-            try
-            {
-                var tab = new Tabuleiro(8, 8);
 
-                tab.colocarPeca(new Torre(tab, Cor.Preta), new Posicao(0, 0));
-                tab.colocarPeca(new Torre(tab, Cor.Preta), new Posicao(1, 3));
-                tab.colocarPeca(new Rei(tab, Cor.Preta), new Posicao(0, 1));
+            var pos = new PosicaoXadrex('a', 1);
+            var pos1 = new PosicaoXadrex('c', 7);
 
-                Tela.imprimirTabuleiro(tab);
+            Console.WriteLine(pos1);
 
-            }
-            catch(TabuleiroException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            
+            Console.WriteLine(pos1.toPosicao());
 
             Console.ReadKey();
         }
