@@ -7,10 +7,10 @@ namespace xadrex_console
     {
         static void Main(string[] args)
         {
+            var tab = new Tabuleiro(8, 8);
 
-            var P = new Posicao(3, 4);
+            Tela.imprimirTabuleiro(tab);
 
-            Console.WriteLine("Posicao: " + P);
 
             Console.ReadKey();
         }
