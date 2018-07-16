@@ -2,6 +2,7 @@
 using tabuleiro;
 using System.Collections.Generic;
 using System.Text;
+using xadrex;
 
 namespace xadrex_console
 {
@@ -29,6 +30,14 @@ namespace xadrex_console
                 Console.WriteLine();
             }
             Console.WriteLine(" a b c d e f g h");
+        }
+
+        public static PosicaoXadrex lerPosicaoXadrex()
+        {
+            string s = Console.ReadLine();
+            char coluna = s[0];
+            int linha = int.Parse(s[1] + "");
+            return new PosicaoXadrex(coluna, linha);
         }
 
         public static void imprimirPeca(Peca peca)

@@ -11,15 +11,23 @@ namespace xadrex_console
             
             try
             {
-                var tab = new Tabuleiro(8, 8);
+                var partida = new PartidaDeXadrex();
 
-                tab.colocarPeca(new Torre(tab, Cor.Preta), new Posicao(0, 0));
-                tab.colocarPeca(new Torre(tab, Cor.Preta), new Posicao(1, 3));
-                tab.colocarPeca(new Rei(tab, Cor.Preta), new Posicao(0, 1));
+                while (!partida.terminada)
+                {
+                    Console.Clear();
+                    Tela.imprimirTabuleiro(partida.tab);
 
-                tab.colocarPeca(new Rei(tab, Cor.Branca), new Posicao(3, 5));
+                    Console.WriteLine();
+                    Console.Write("Origem: ");
+                    var origem = Tela.lerPosicaoXadrex().toPosicao();
 
-                Tela.imprimirTabuleiro(tab);
+                    Console.Write("Destino: ");
+                    var destino = Tela.lerPosicaoXadrex().toPosicao();
+
+                    partida.executaMovimento(origem, destino);
+                }
+                
 
             }
             catch(TabuleiroException e)
