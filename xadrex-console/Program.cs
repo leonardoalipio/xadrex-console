@@ -17,10 +17,15 @@ namespace xadrex_console
                 {
                     Console.Clear();
                     Tela.imprimirTabuleiro(partida.tab);
-
                     Console.WriteLine();
+
                     Console.Write("Origem: ");
                     var origem = Tela.lerPosicaoXadrex().toPosicao();
+
+                    bool[,] posicoesPossiveis = partida.tab.Peca(origem).movimentosPossiveis();
+
+                    Console.Clear();
+                    Tela.imprimirTabuleiro(partida.tab, posicoesPossiveis);
 
                     Console.Write("Destino: ");
                     var destino = Tela.lerPosicaoXadrex().toPosicao();

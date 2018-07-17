@@ -1,7 +1,4 @@
 ﻿using System;
-using tabuleiro;
-using System.Collections.Generic;
-using System.Text;
 
 namespace tabuleiro
 {
