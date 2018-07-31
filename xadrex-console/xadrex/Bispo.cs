@@ -2,31 +2,45 @@
 
 namespace xadrex
 {
-    class Torre : Peca
+    class Bispo : Peca
     {
-        public Torre(Tabuleiro tabuleiro, Cor cor) : base(tabuleiro, cor)
+        public Bispo(Tabuleiro tab, Cor cor) : base(tab, cor)
         {
+
+        }
+        public override string ToString()
+        {
+            return "B";
+        }
+
+        private bool podeMover(Posicao pos)
+        {
+            var P = Tabuleiro.Peca(pos);
+            return P == null || P.Cor != Cor;
         }
 
         public override bool[,] movimentosPossiveis()
         {
             var mat = new bool[Tabuleiro.Linhas, Tabuleiro.Colunas];
+
             var pos = new Posicao(0, 0);
 
-            //acima
-            pos.definirValores(Posicao.Linha - 1, Posicao.Coluna);
+            //NO
+
+            pos.definirValores(Posicao.Linha - 1, Posicao.Coluna - 1);
             while (Tabuleiro.posicaoValida(pos) && podeMover(pos))
             {
                 mat[pos.Linha, pos.Coluna] = true;
-                if (Tabuleiro.Peca(pos) != null && Tabuleiro.Peca(pos).Cor != Cor)
+                if (Tabuleiro.Peca(pos) != null && Tabuleiro.Peca(pos).Cor != Cor)            
                 {
                     break;
                 }
-                pos.Linha = pos.Linha - 1;
+                pos.definirValores(pos.Linha - 1, pos.Coluna - 1);
             }
 
-            //abaixo
-            pos.definirValores(Posicao.Linha + 1, Posicao.Coluna);
+            //NE
+
+            pos.definirValores(Posicao.Linha - 1, Posicao.Coluna + 1);
             while (Tabuleiro.posicaoValida(pos) && podeMover(pos))
             {
                 mat[pos.Linha, pos.Coluna] = true;
@@ -34,11 +48,11 @@ namespace xadrex
                 {
                     break;
                 }
-                pos.Linha = pos.Linha + 1;
+                pos.definirValores(pos.Linha - 1, pos.Coluna + 1);
             }
 
-            //direita
-            pos.definirValores(Posicao.Linha, Posicao.Coluna + 1);
+            //SE
+            pos.definirValores(Posicao.Linha + 1, Posicao.Coluna + 1);
             while (Tabuleiro.posicaoValida(pos) && podeMover(pos))
             {
                 mat[pos.Linha, pos.Coluna] = true;
@@ -46,11 +60,11 @@ namespace xadrex
                 {
                     break;
                 }
-                pos.Coluna = pos.Coluna + 1;
+                pos.definirValores(pos.Linha + 1, pos.Coluna + 1);
             }
 
-            //esquerda
-            pos.definirValores(Posicao.Linha, Posicao.Coluna - 1);
+            //SO
+            pos.definirValores(Posicao.Linha + 1, Posicao.Coluna - 1);
             while (Tabuleiro.posicaoValida(pos) && podeMover(pos))
             {
                 mat[pos.Linha, pos.Coluna] = true;
@@ -58,21 +72,10 @@ namespace xadrex
                 {
                     break;
                 }
-                pos.Coluna = pos.Coluna - 1;
+                pos.definirValores(pos.Linha + 1, pos.Coluna - 1);
             }
 
             return mat;
-        }
-
-        private bool podeMover(Posicao pos)
-        {
-            var p = Tabuleiro.Peca(pos);
-            return p == null || p.Cor != Cor;
-        }
-
-        public override string ToString()
-        {
-            return "T";
         }
     }
 }
