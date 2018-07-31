@@ -9,9 +9,10 @@ namespace xadrex
         public int turno { get; private set; }
         public Cor jogadorAtual { get; private set; }
         public bool terminada { get; private set; }
-        private HashSet<Peca> pecas;
-        private HashSet<Peca> capturadas;
-
+        private ISet<Peca> pecas;
+        private ISet<Peca> capturadas;
+        public bool xeque { get; private set; }
+        
         public PartidaDeXadrex()
         {
             tab = new Tabuleiro(8, 8);
@@ -23,7 +24,7 @@ namespace xadrex
             colocarPecas();
         }
 
-        public void executaMovimento(Posicao origem, Posicao destino)
+        public Peca executaMovimento(Posicao origem, Posicao destino)
         {
             var p = tab.retirarPeca(origem);
             p.incrementarQteMovimentos();
@@ -33,11 +34,37 @@ namespace xadrex
             {
                 capturadas.Add(pecaCapturada);
             }
+            return pecaCapturada;
+        }
+
+        public void desfazMovimento(Posicao origem, Posicao destino, Peca pecaCapturada)
+        {
+            var P = tab.retirarPeca(destino);
+            P.decrementarQteMovimentos();
+            if (pecaCapturada != null)
+            {
+                tab.colocarPeca(pecaCapturada, destino);
+                capturadas.Remove(pecaCapturada);
+            }
+            tab.colocarPeca(P, origem);
         }
 
         public void realizaJogada(Posicao origem, Posicao destino)
         {
-            executaMovimento(origem, destino);
+            var pecaCapturada = executaMovimento(origem, destino);
+            if (estaEmXeque(jogadorAtual))
+            {
+                desfazMovimento(origem, destino, pecaCapturada);
+                throw new TabuleiroException("Você ão pode se colocar em xeque!");
+            }
+            if (estaEmXeque(adversaria(jogadorAtual)))
+            {
+                xeque = true;
+            }
+            else
+            {
+                xeque = false;
+            }
             turno++;
             mudaJogador();
         }
@@ -78,9 +105,9 @@ namespace xadrex
             }
         }
 
-        public HashSet<Peca> pecasCapturadads(Cor cor)
+        public ISet<Peca> pecasCapturadads(Cor cor)
         {
-            HashSet<Peca> aux = new HashSet<Peca>();
+            var aux = new HashSet<Peca>();
             foreach (var x in capturadas)
             {
                 if (x.Cor == cor)
@@ -91,9 +118,9 @@ namespace xadrex
             return aux;
         }
 
-        public HashSet<Peca> pecasEmJogo(Cor cor)
+        public ISet<Peca> pecasEmJogo(Cor cor)
         {
-            HashSet<Peca> aux = new HashSet<Peca>();
+            var aux = new HashSet<Peca>();
             foreach (var x in pecas)
             {
                 if(x.Cor == cor)
@@ -103,6 +130,48 @@ namespace xadrex
             }
             aux.ExceptWith(pecasCapturadads(cor));
             return aux;
+        }
+
+        public Cor adversaria(Cor cor)
+        {
+            if (cor == Cor.Branca)
+            {
+                return Cor.Preta;            
+            }
+            else
+            {
+                return Cor.Branca;
+            }
+        }
+
+        private Peca rei(Cor cor)
+        {
+            foreach (var item in pecasEmJogo(cor))
+            {
+                if (item is Rei)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        public bool estaEmXeque(Cor cor)
+        {
+            var R = rei(cor);
+            if(R == null)
+            {
+                throw new TabuleiroException("Não tem rei da cor " + cor + " no tabuleiro");
+            }
+            foreach (var item in pecasEmJogo(adversaria(cor)))
+            {
+                var mat = item.movimentosPossiveis();
+                if (mat[R.Posicao.Linha, R.Posicao.Coluna])
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void colocarNovaPeca(char coluna, int linha, Peca peca)
